@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ecam900/go-rest/internal/database"
 	transportHTTP "github.com/ecam900/go-rest/internal/transport/http"
+	"github.com/joho/godotenv"
 )
 
 // App struct which contains things like pointers
@@ -14,6 +16,13 @@ type App struct{}
 // Run - Sets up  our application
 func (app *App) Run() error {
 	fmt.Println("Setting Up...")
+	godotenv.Load(".env")
+
+	var err error
+	_, err = database.NewDatabase()
+	if err != nil {
+		return err
+	}
 
 	handler := transportHTTP.NewHandler()
 	handler.SetupRoutes()
@@ -27,6 +36,8 @@ func (app *App) Run() error {
 
 func main() {
 	fmt.Println("Prod Ready Rest API Boilerplate")
+	// Load environment variables with godotenv
+	godotenv.Load(".env")
 	app := App{}
 	if err := app.Run(); err != nil {
 		fmt.Println("Error Starting Up")
