@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ecam900/go-rest/internal/comment"
 	"github.com/gorilla/mux"
 )
 
 // Hanlder - stores pointer to our comments service
 type Handler struct {
-	Router *mux.Router
+	Router  *mux.Router
+	Service *comment.Service
 }
 
 // NewHandler - returns a pointer to a Handler
