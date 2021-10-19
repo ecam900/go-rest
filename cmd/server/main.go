@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ecam900/go-rest/internal/comment"
 	"github.com/ecam900/go-rest/internal/database"
 	transportHTTP "github.com/ecam900/go-rest/internal/transport/http"
 	"github.com/joho/godotenv"
@@ -19,12 +20,15 @@ func (app *App) Run() error {
 	godotenv.Load(".env")
 
 	var err error
-	_, err = database.NewDatabase()
+	db, err := database.NewDatabase()
 	if err != nil {
 		return err
 	}
 
-	handler := transportHTTP.NewHandler()
+	commentService := comment.NewService(db)
+
+	// handler := transportHTTP.NewHandler(commentService)
+	handler := transportHTTP.NewHandler(commentService)
 	handler.SetupRoutes()
 
 	if err := http.ListenAndServe(":8080", handler.Router); err != nil {
