@@ -18,7 +18,7 @@ type Handler struct {
 // NewHandler - returns a pointer to a Handler
 func NewHandler(service *comment.Service) *Handler {
 	return &Handler{
-		Service: service, 
+		Service: service,
 	}
 }
 
@@ -27,13 +27,12 @@ func (h *Handler) SetupRoutes() {
 	fmt.Println("Setting Up Routes")
 	h.Router = mux.NewRouter()
 
-	h.Router.HandleFunc("api/comment", h.GetAllComments).Methods("GET")
-	h.Router.HandleFunc("api/comment", h.PostComment).Methods("POST")
+	h.Router.HandleFunc("/api/comment", h.GetAllComments).Methods("GET")
+	h.Router.HandleFunc("/api/comment", h.PostComment).Methods("POST")
 
-	h.Router.HandleFunc("api/comment/{id}", h.GetComment).Methods("GET")
-	h.Router.HandleFunc("api/comment/{id}", h.DeleteComment).Methods("DELETE")
-	h.Router.HandleFunc("api/comment/{id}", h.UpdateComment).Methods("PUT")
-
+	h.Router.HandleFunc("/api/comment/{id}", h.GetComment).Methods("GET")
+	h.Router.HandleFunc("/api/comment/{id}", h.DeleteComment).Methods("DELETE")
+	h.Router.HandleFunc("/api/comment/{id}", h.UpdateComment).Methods("PUT")
 
 	h.Router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
 
@@ -41,17 +40,15 @@ func (h *Handler) SetupRoutes() {
 	})
 }
 
-
 // GetComment - retrieve a comment by ID.
 func (h *Handler) GetComment(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	i ,err := strconv.ParseUint(id, 10, 64)
+	i, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
 		fmt.Fprintf(w, "Unable to parse UINT from ID")
 	}
-
 
 	comment, err := h.Service.GetComment(uint(i))
 	if err != nil {
@@ -60,9 +57,7 @@ func (h *Handler) GetComment(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "%+v", comment)
 
-
 }
-
 
 // GetAllComments - retrieves all comments from the comment service.
 func (h *Handler) GetAllComments(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +71,7 @@ func (h *Handler) GetAllComments(w http.ResponseWriter, r *http.Request) {
 // PostComment - addas a new comment.
 func (h *Handler) PostComment(w http.ResponseWriter, r *http.Request) {
 	comment, err := h.Service.PostComment(comment.Comment{
-		Slug:"/",
+		Slug: "/",
 	})
 	if err != nil {
 		fmt.Fprintf(w, "Failed to post new comment")
@@ -87,7 +82,7 @@ func (h *Handler) PostComment(w http.ResponseWriter, r *http.Request) {
 // UpdateComment - updates a comment by ID.
 func (h *Handler) UpdateComment(w http.ResponseWriter, r *http.Request) {
 	comment, err := h.Service.UpdateComment(1, comment.Comment{
-		Slug:"/new",
+		Slug: "/new",
 	})
 	if err != nil {
 		fmt.Fprintf(w, "Failed to update comment")

@@ -27,7 +27,6 @@ func (app *App) Run() error {
 
 	commentService := comment.NewService(db)
 
-	// handler := transportHTTP.NewHandler(commentService)
 	handler := transportHTTP.NewHandler(commentService)
 	handler.SetupRoutes()
 
